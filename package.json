@@ -1,0 +1,20 @@
+{
+  "name": "d1-provide-payload-generator",
+  "version": "1.0.0",
+  "description": "Payload generator for D1 provide flow",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "bin": "main.js",
+  "pkg": {
+    "targets": [
+      "node14-win-x64"
+    ]
+  },
+  "author": "Marcelino Madriaga <zmamadriaga@globe.com.ph>",
+  "license": "ISC",
+  "dependencies": {
+    "nconf": "0.11.2"
+  }
+}

@@ -1,0 +1,18 @@
+{
+    "FD_LOCATION": "./FD",
+    "BPO_IDs": [
+    	"3a6ae12d-8592-4435-8e69-8a2a712a0cf7",
+		"bbe2520c-29f4-48dc-87e8-de666711203a",
+        "e91a6dde-6cf4-47a9-b13d-76bee9bc17a6",
+        "b68d6df2-a471-4a5e-be20-dd3b7158e2dd"
+    ],
+    "OUTPUT_FOLDER": "./generated-provide-payloads",
+    "PRETTIFY": true,
+    "ALLOW_RANDOM_QTY": false,
+    "INCLUDE_ALL_SPO": true,
+    "OFF_NET_3RD_PARTY_PROVIDER": false,
+    "PRODUCT_OFFERS_WITH_PLACE": [
+        "Domestic Cross Connect",
+        "Last Mile A"
+    ]
+}
