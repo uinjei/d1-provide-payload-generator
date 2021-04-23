@@ -17,23 +17,26 @@ const PRODUCT_SPEC_FOLDER = "productSpecification"
 const PRODUCT_OFFERING_GROUP_FOLDER = "productOfferingGroup"
 const PRODUCT_PRICE_FOLDER = "price" 
 const LOCALE = "en-US"
-const CURRENCY = "defaultCurrency"
-
 
 const toJSON = data => JSON.parse(data)
 const getLocaleValue = (contents) => contents.find(content => LOCALE === content.locale).value
-const getCurrency = (contents) => contents[CURRENCY]
+const getCurrency = (contents) => contents.defaultCurrency
+const getMainSpo = (contents) =>
+    contents.find(content => content.bundledProdOfferOption.numberRelOfferLowerLimit === 1 &&
+    content.bundledProdOfferOption.numberRelOfferUpperLimit === 1 && content.bundledProdOfferOption.defaultRelOfferNumber === 1
+    ).id
 
 const readJSONFile = (__filename) => readFile(__filename, { encoding: "utf8" }).then(toJSON)
 
 const generateJSONFileLocation = (type, id) => `${FD_LOCATION}/${type}/${id}.json`
 
-const writeToJSONFile = ({ name, currency, payload }) => writeFile(`${OUTPUT_FOLDER}/${name}_${currency}.json`, JSON.stringify(payload, null, PRETTIFY?4:0))
+const writeToJSONFile = ({name, currency, timing, proration, payload}) =>  writeFile(`${OUTPUT_FOLDER}/${name}_${currency}_${timing}_${proration}.json`, JSON.stringify(payload, null, PRETTIFY?4:0))
 
 module.exports = {
     readJSONFile,
     getLocaleValue,
     getCurrency,
+    getMainSpo,
     generateJSONFileLocation,
     BPO_IDS,
     OUTPUT_FOLDER,

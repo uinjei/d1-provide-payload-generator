@@ -6,7 +6,9 @@ const {
     OUTPUT_FOLDER, 
     getLocaleValue,
     getCurrency,
+    getMainSpo,
     PRODUCT_OFFERING_FOLDER, 
+    PRODUCT_PRICE_FOLDER,
     generateJSONFileLocation, 
     writeToJSONFile,
     OFF_NET_3RD_PARTY_PROVIDER } = require('./util')
@@ -22,6 +24,41 @@ const {
 
     */
 
+
+const findPrice = async args => {
+    const { spoPrice } = args;
+    const priceCharacteristic = await Promise.all(spoPrice.map(price => {
+        const __filename = generateJSONFileLocation(PRODUCT_PRICE_FOLDER, price.id)
+        return readJSONFile(__filename)
+            .then(({priceType, priceCharacteristic}) => {
+                if (priceType === "RC") {
+                    return {
+                        timing: priceCharacteristic.find(result => result.name === "Payment timing").characteristicValue[0].value,
+                        proration: priceCharacteristic.find(result => result.name === "Proration Method").characteristicValue[0].value
+                    }
+                }
+                else return {oc: "OC"}
+            })
+    }))
+    return {
+        ...args,
+        timing: priceCharacteristic.find(result => result.timing).timing,
+        proration: priceCharacteristic.find(result => result.proration).proration
+    }
+}
+
+const findMainSpoPrice = args => {
+    const { mainSpoId } = args;
+    const __filename = generateJSONFileLocation(PRODUCT_OFFERING_FOLDER, mainSpoId)
+    return readJSONFile(__filename)
+        .then(({productOfferingPrice}) => {
+            return {
+                ...args,
+                spoPrice: productOfferingPrice
+            }
+        })
+}
+
 const buildPayload = async bundledProduct => {
 
     if (!bundledProduct.isBundle) throw new Error("Not a bundle")
@@ -31,13 +68,16 @@ const buildPayload = async bundledProduct => {
     const onNetIndicator = selectOnNetIndicator(OFF_NET_3RD_PARTY_PROVIDER)
     const offerGroupOrders = await generateOfferGroupOrder(bundledProduct.bundledProdOfferGroupOption)
     const orderItems = await createOrderItems([...bundledProduct.bundledProductOffering,...offerGroupOrders], onNetIndicator)
-
+    
     mainOrder.orderItem = orderItems
     payload.orderItem.push(mainOrder)
 
+    const mainSpoId = getMainSpo(bundledProduct.bundledProductOffering)
+    
     return {
         name: getLocaleValue(bundledProduct.localizedName).replace(/[^\w\s]/, ' '),
         currency: getCurrency(bundledProduct.currency),
+        mainSpoId: mainSpoId,
         payload
     }
 }
@@ -47,6 +87,8 @@ let generatedPayloadList = BPO_IDS.map(id => {
     const __filename = generateJSONFileLocation(PRODUCT_OFFERING_FOLDER, id)
     return readJSONFile(__filename)
         .then(buildPayload)
+        .then(findMainSpoPrice)
+        .then(findPrice)
         .then(writeToJSONFile)
         .catch(error => error)
 })
