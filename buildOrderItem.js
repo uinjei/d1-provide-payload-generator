@@ -16,6 +16,7 @@ const BUNDLE_PRODUCT_TYPE = "BUNDLE_PRODUCT_TYPE"
 const SIMPLE_PRODUCT_TYPE = "SIMPLE_PRODUCT_TYPE"
 const STRING_TYPE = "String"
 const INTEGER_TYPE = "Integer"
+const FLOAT_TYPE = "Float"
 
 const addBillingAccountField = payload => payload.billingAccount = {
     id: "{{billing}}"
@@ -87,8 +88,8 @@ const generateValue = (type) => {
     switch (type) {
         case STRING_TYPE:
             return "Random String"
-            break;
         case INTEGER_TYPE:
+        case FLOAT_TYPE:
             return generateRandomNumber(1, 100)
     }
 }
