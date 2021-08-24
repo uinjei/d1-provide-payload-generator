@@ -1,7 +1,7 @@
 {
-    "FD_LOCATION": "./FD_env52_20210624",
+    "FD_LOCATION": "./FD",
     "BPO_IDs": [
-        "fa600994-1d35-48ea-a9d1-4daf30aa0e17"
+        "c49811bb-8456-4675-bac9-495430314bad"
     ],
     "OUTPUT_FOLDER": "./generated-provide-payloads",
     "PRETTIFY": true,

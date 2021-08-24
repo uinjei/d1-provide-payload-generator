@@ -32,9 +32,11 @@ const findPrice = async args => {
         return readJSONFile(__filename)
             .then(({priceType, priceCharacteristic}) => {
                 if (priceType === "RC") {
+                    const paymentTiming = priceCharacteristic.find(result => result.name === "Payment timing");
+                    const prorationMethod = priceCharacteristic.find(result => result.name === "Proration Method");
                     return {
-                        timing: priceCharacteristic.find(result => result.name === "Payment timing").characteristicValue[0].value,
-                        proration: priceCharacteristic.find(result => result.name === "Proration Method").characteristicValue[0].value
+                        timing: paymentTiming?paymentTiming.characteristicValue[0].value:"NOPT",
+                        proration: prorationMethod?prorationMethod.characteristicValue[0].value:"NOPM"
                     }
                 }
                 else return {oc: "OC"}
