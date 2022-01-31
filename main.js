@@ -35,17 +35,29 @@ const findPrice = async args => {
                     const paymentTiming = priceCharacteristic.find(result => result.name === "Payment timing");
                     const prorationMethod = priceCharacteristic.find(result => result.name === "Proration Method");
                     return {
-                        timing: paymentTiming?paymentTiming.characteristicValue[0].value:"NOPT",
-                        proration: prorationMethod?prorationMethod.characteristicValue[0].value:"NOPM"
+                        rc: {
+                            timing: paymentTiming?paymentTiming.characteristicValue[0].value:"NO_PAYMENT_TIMING",
+                            proration: prorationMethod?prorationMethod.characteristicValue[0].value:"NO_PRORATION_METHOD"
+                        }
                     }
                 }
                 else return {oc: "OC"}
             })
     }))
+    let paymentTiming = ""; 
+    let prorationMethod = "";
+    const rc = priceCharacteristic.find(result => result.rc);
+    if (rc) {
+       paymentTiming = rc.rc.timing;
+       prorationMethod = rc.rc.proration;
+    } else {
+       paymentTiming = "NO";
+       prorationMethod = "RC";
+    }
     return {
         ...args,
-        timing: priceCharacteristic.find(result => result.timing).timing,
-        proration: priceCharacteristic.find(result => result.proration).proration
+        timing: paymentTiming,
+        proration: prorationMethod
     }
 }
 
